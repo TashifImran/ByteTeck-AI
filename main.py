@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
+from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 import os
@@ -15,12 +15,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 # Load environment variables from .env
-
+load_dotenv()
 
 # Key yahan se uthegi
-API_KEY = os.getenv("GOOGLE_API_KEY")
+# API_KEY = os.getenv("GOOGLE_API_KEY")
+
 
 # Global Client
+# client = genai.Client(api_key=API_KEY)
+
+# Purane code ki jagah ye try karo
+from google import genai
+import os
+
+# API_KEY tumhari wahi AQ wali hai
+API_KEY = os.getenv("GOOGLE_API_KEY") 
+
+# Client initialize karte waqt explicit 'api_key' argument use karo
 client = genai.Client(api_key=API_KEY)
 
 
