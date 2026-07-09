@@ -14,29 +14,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Load environment variables from .env
+
 load_dotenv()
 
-# Key yahan se uthegi
-# API_KEY = os.getenv("GOOGLE_API_KEY")
-
-
-# Global Client
-# client = genai.Client(api_key=API_KEY)
-
-# Purane code ki jagah ye try karo
-from google import genai
-import os
-
-# API_KEY tumhari wahi AQ wali hai
+# Client initialize
 API_KEY = os.getenv("GOOGLE_API_KEY") 
-
-# Client initialize karte waqt explicit 'api_key' argument use karo
 client = genai.Client(api_key=API_KEY)
 
-
-# UPDATED: Frontend ke naye models yahan add kar diye hain
-ALLOWED_MODELS = ["gemini-2.5-flash", "gemini-3.0-flash", "gemini-3.5-flash"]
+# FIXED: Tumhari list se valid models
+ALLOWED_MODELS = [
+    "models/gemini-3.5-flash", 
+    "models/gemini-3.1-flash-lite", 
+    "models/gemini-2.0-flash", 
+    "models/gemini-2.5-flash"
+]
 
 def load_skill_prompt(skill_name):
     file_path = os.path.join("skills", f"{skill_name}.txt")
@@ -56,11 +47,14 @@ def get_system_instruction(user_input):
     return load_skill_prompt("mentor")
 
 def get_model_response(history, user_input, model_id):
+    # FIXED: Agar frontend se bina 'models/' prefix ke aaye, toh fix kar do
+    if not model_id.startswith("models/"):
+        model_id = f"models/{model_id}"
+        
     instruction = get_system_instruction(user_input)
     
     formatted_history = []
     for m in history:
-        # Frontend 'assistant' bhej raha hai, hum yahan 'model' map kar rahe hain
         role = "user" if m['role'] == "user" else "model"
         formatted_history.append(types.Content(
             role=role,
@@ -81,10 +75,14 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def chat(data: ChatRequest):
-    if data.model_id not in ALLOWED_MODELS:
-        raise HTTPException(status_code=400, detail="Invalid model selected!")
+    # FIXED: Prefix check karne ke liye logic
+    full_model_id = data.model_id if data.model_id.startswith("models/") else f"models/{data.model_id}"
+    
+    if full_model_id not in ALLOWED_MODELS:
+        raise HTTPException(status_code=400, detail=f"Invalid model! Available: {ALLOWED_MODELS}")
+        
     try:
-        answer = get_model_response(data.history, data.message, data.model_id)
+        answer = get_model_response(data.history, data.message, full_model_id)
         return {"answer": answer}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
