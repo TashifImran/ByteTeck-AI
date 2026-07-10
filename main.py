@@ -21,7 +21,6 @@ load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY") 
 client = genai.Client(api_key=API_KEY)
 
-# FIXED: Tumhari list se valid models
 ALLOWED_MODELS = [
     "models/gemini-3.5-flash", 
     "models/gemini-3.1-flash-lite", 
@@ -47,12 +46,7 @@ def get_system_instruction(user_input):
     return load_skill_prompt("mentor")
 
 def get_model_response(history, user_input, model_id):
-    # FIXED: Agar frontend se bina 'models/' prefix ke aaye, toh fix kar do
-    if not model_id.startswith("models/"):
-        model_id = f"models/{model_id}"
-        
     instruction = get_system_instruction(user_input)
-    
     formatted_history = []
     for m in history:
         role = "user" if m['role'] == "user" else "model"
@@ -61,12 +55,17 @@ def get_model_response(history, user_input, model_id):
             parts=[types.Part.from_text(text=m['content'])]
         ))
     
-    response = client.models.generate_content(
-        model=model_id,
-        contents=formatted_history + [types.Content(role="user", parts=[types.Part.from_text(text=user_input)])],
-        config=types.GenerateContentConfig(system_instruction=instruction)
-    )
-    return response.text
+    # API Call with error handling
+    try:
+        response = client.models.generate_content(
+            model=model_id,
+            contents=formatted_history + [types.Content(role="user", parts=[types.Part.from_text(text=user_input)])],
+            config=types.GenerateContentConfig(system_instruction=instruction)
+        )
+        return response.text
+    except Exception as e:
+        # Agar model down ho ya error aaye
+        raise Exception("This model is not responding. Please switch to another model and try again.")
 
 class ChatRequest(BaseModel):
     history: list
@@ -75,7 +74,6 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def chat(data: ChatRequest):
-    # FIXED: Prefix check karne ke liye logic
     full_model_id = data.model_id if data.model_id.startswith("models/") else f"models/{data.model_id}"
     
     if full_model_id not in ALLOWED_MODELS:
@@ -85,4 +83,5 @@ async def chat(data: ChatRequest):
         answer = get_model_response(data.history, data.message, full_model_id)
         return {"answer": answer}
     except Exception as e:
+        # Frontend ko yahi error message jayega
         raise HTTPException(status_code=500, detail=str(e))
