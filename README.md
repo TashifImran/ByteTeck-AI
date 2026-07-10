@@ -3,6 +3,6 @@ title: ByteTeck AI
 emoji: 🚀
 colorFrom: blue
 colorTo: indigo
-sdk: docker
+sdk: static
 pinned: false
 ---
