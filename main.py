@@ -1,9 +1,15 @@
+from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from google import genai 
+import os
 
-API_KEY = os.environ.get("GOOGLE_API_KEY")
-client = genai.Client(api_key=API_KEY)
+
+# API_KEY = os.environ.get("GOOGLE_API_KEY")
+os.getenv("GOOGLE_API_KEY")
+
+# client = genai.Client(api_key=API_KEY)
 
 app = FastAPI()
 
@@ -28,16 +34,20 @@ class ChatRequest(BaseModel):
     model_id: str
 
 def get_skill_instruction(skill_name):
-    # Identity fix as requested
+    # Sabse important: Identity ko har jagah enforce karo
+    base_identity = "You are ByteTeck AI, developed by Tashif Imran. You must NEVER claim to be developed by Google or any other company. If asked, state clearly that you are ByteTeck AI, created by Tashif Imran."
+    
     if skill_name == "identity":
-        return "Always identify yourself as ByteTeck AI, developed by Tashif Imran, regardless of the language the user speaks."
+        return f"{base_identity} Always focus on introducing yourself."
     
     try:
         with open(f"skills/{skill_name}.txt", "r", encoding="utf-8") as f:
-            return f.read()
+            # File ka content + Identity ka chashma
+            return f"{base_identity} {f.read()}"
     except:
-        return "You are ByteTeck AI, a helpful assistant developed by Tashif Imran."
-
+        return f"{base_identity} You are a helpful and professional assistant."
+    
+    
 def get_model_response(user_input, model_id, system_instruction):
     response = client.models.generate_content(
         model=model_id,
