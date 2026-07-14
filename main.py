@@ -1,15 +1,41 @@
-from fastapi import FastAPI
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from google import genai 
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 
-# API_KEY = os.environ.get("GOOGLE_API_KEY")
-os.getenv("GOOGLE_API_KEY")
+api_key = os.getenv("GOOGLE_API_KEY")
+client = genai.Client(api_key=api_key)
 
-# client = genai.Client(api_key=API_KEY)
+# 1. FIX: ALLOWED_MODELS ko function se pehle likho
+ALLOWED_MODELS = [
+    "models/gemini-2.0-flash",
+    "models/gemini-2.5-flash",
+    "models/gemini-3.1-flash-lite",
+    "models/gemini-3.5-flash",
+    "models/gemini-flash-latest"
+]
+
+def get_model_response(user_input, model_id, system_instruction):
+    # Check karo ki model hamari list mein hai ya nahi
+    if model_id not in ALLOWED_MODELS:
+        model_id = "models/gemini-2.0-flash" 
+
+    try:
+        response = client.models.generate_content(
+            model=model_id,
+            contents=user_input,
+            config=genai.types.GenerateContentConfig(
+                system_instruction=system_instruction
+            )
+        )
+        return response.text
+    except Exception as e:
+        print(f"Error details: {e}")
+        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
 
 app = FastAPI()
 
@@ -21,20 +47,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-ALLOWED_MODELS = [
-    "models/gemini-2.0-flash",
-    "models/gemini-2.5-flash",
-    "models/gemini-flash-latest",
-    "models/gemini-3.1-flash-lite"
-]
-
 class ChatRequest(BaseModel):
     history: list
     message: str
     model_id: str
 
 def get_skill_instruction(skill_name):
-    # Sabse important: Identity ko har jagah enforce karo
     base_identity = "You are ByteTeck AI, developed by Tashif Imran. You must NEVER claim to be developed by Google or any other company. If asked, state clearly that you are ByteTeck AI, created by Tashif Imran."
     
     if skill_name == "identity":
@@ -42,19 +60,9 @@ def get_skill_instruction(skill_name):
     
     try:
         with open(f"skills/{skill_name}.txt", "r", encoding="utf-8") as f:
-            # File ka content + Identity ka chashma
             return f"{base_identity} {f.read()}"
     except:
         return f"{base_identity} You are a helpful and professional assistant."
-    
-    
-def get_model_response(user_input, model_id, system_instruction):
-    response = client.models.generate_content(
-        model=model_id,
-        contents=user_input,
-        config={"system_instruction": system_instruction}
-    )
-    return response.text
 
 @app.post("/chat")
 async def chat(data: ChatRequest):
@@ -63,7 +71,6 @@ async def chat(data: ChatRequest):
     if full_model_id not in ALLOWED_MODELS:
         raise HTTPException(status_code=400, detail=f"Invalid model! Allowed: {ALLOWED_MODELS}")
     
-    # ORIGINAL 7 SKILL IDENTIFICATION LOGIC
     msg = data.message.lower()
     if any(w in msg for w in ["who are you", "introduce", "creator", "developer", "name", "ap kon ho", "naam"]):
         skill = "identity"
@@ -98,5 +105,18 @@ async def root():
     return {"status": "Backend is running"}
 
 
+# from google import genai
+# import os
+# from dotenv import load_dotenv
 
+# load_dotenv()
+# client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
+# print("--- TUMHARE ACCOUNT KE ALLOWED MODELS ---")
+
+# for m in client.models.list():
+#     # Yahan 'supported_actions' use karna hai
+#     if "generateContent" in m.supported_actions:
+#         print(f"Model ID: {m.name}")
+
+# print("-----------------------------------------")
