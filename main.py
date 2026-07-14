@@ -10,7 +10,6 @@ load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 client = genai.Client(api_key=api_key)
 
-# 1. FIX: ALLOWED_MODELS ko function se pehle likho
 ALLOWED_MODELS = [
     "models/gemini-2.0-flash",
     "models/gemini-2.5-flash",
@@ -20,7 +19,6 @@ ALLOWED_MODELS = [
 ]
 
 def get_model_response(user_input, model_id, system_instruction):
-    # Check karo ki model hamari list mein hai ya nahi
     if model_id not in ALLOWED_MODELS:
         model_id = "models/gemini-2.0-flash" 
 
@@ -34,8 +32,8 @@ def get_model_response(user_input, model_id, system_instruction):
         )
         return response.text
     except Exception as e:
-        print(f"Error details: {e}")
-        raise HTTPException(status_code=500, detail=f"AI Error: {str(e)}")
+        # Yahan bhi error ko handle kiya hai taaki crash na ho
+        raise Exception(str(e))
 
 app = FastAPI()
 
@@ -69,7 +67,7 @@ async def chat(data: ChatRequest):
     full_model_id = data.model_id if data.model_id.startswith("models/") else f"models/{data.model_id}"
     
     if full_model_id not in ALLOWED_MODELS:
-        raise HTTPException(status_code=400, detail=f"Invalid model! Allowed: {ALLOWED_MODELS}")
+        return {"answer": "Invalid model selected. Please choose a valid model from the list."}
     
     msg = data.message.lower()
     if any(w in msg for w in ["who are you", "introduce", "creator", "developer", "name", "ap kon ho", "naam"]):
@@ -94,16 +92,17 @@ async def chat(data: ChatRequest):
         return {"answer": answer}
     except Exception as e:
         error_msg = str(e)
+        
         if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-            raise HTTPException(status_code=429, detail="Quota exceeded. Please switch model.")
+            return {"answer": "The AI model's limit has been reached. Please select a different model and try again."}
         if "503" in error_msg or "UNAVAILABLE" in error_msg:
-            raise HTTPException(status_code=503, detail="Model busy. Please try again.")
-        raise HTTPException(status_code=500, detail=error_msg)
+            return {"answer": "The model is currently busy. Please try again in a few moments."}
+        
+        return {"answer": "Something went wrong. Please try again or switch to a different model."}
 
 @app.get("/")
 async def root():
     return {"status": "Backend is running"}
-
 
 # from google import genai
 # import os
