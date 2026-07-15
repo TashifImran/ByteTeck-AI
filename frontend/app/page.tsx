@@ -262,8 +262,8 @@ export default function Home() {
       <div className="flex-1 flex flex-col p-6">
         <div className="flex-1 overflow-y-auto space-y-4">
           {messages.length === 0 && (
-            <div className="h-full flex items-center justify-center text-4xl font-black text-white/10 animate-bounce">
-              BYTETECK AI
+            <div className="h-full flex items-center justify-center">
+              <h1 className="text-4xl font-black text-[#333] animate-pulse">BYTETECK AI</h1>
             </div>
           )}
           {messages.map((m, i) => (
