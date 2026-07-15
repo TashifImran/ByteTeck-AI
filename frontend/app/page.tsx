@@ -112,15 +112,36 @@ export default function Home() {
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState('');
   const [model, setModel] = useState("models/gemini-2.0-flash");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Auto-scroll
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
+
+  // Load Saved Chats
+  useEffect(() => {
+    const saved = localStorage.getItem('chat-sessions');
+    if (saved) setSessions(JSON.parse(saved));
+  }, []);
+
+  // Save Chats to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('chat-sessions', JSON.stringify(sessions));
+  }, [sessions]);
 
   const startNewChat = () => {
     const newSession = { id: Date.now().toString(), title: "New Chat", messages: [] };
     setSessions([newSession, ...sessions]);
     setCurrentSessionId(newSession.id);
     setMessages([]);
+  };
+
+  const deleteChat = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = sessions.filter(s => s.id !== id);
+    setSessions(updated);
+    if (currentSessionId === id) { setMessages([]); setCurrentSessionId(null); }
   };
 
   const sendMessage = async () => {
@@ -137,27 +158,46 @@ export default function Home() {
         history: messages, message: input, model_id: model 
       });
       const aiMsg = { role: 'assistant', content: res.data.answer.replace(/\*\*/g, '') };
-      setMessages([...newMessages, aiMsg]);
+      const updatedMessages = [...newMessages, aiMsg];
+      setMessages(updatedMessages);
+      setSessions(prev => prev.map(s => s.id === (currentSessionId || s.id) ? { ...s, messages: updatedMessages, title: input.substring(0, 20) } : s));
     } catch (e) {
-      setMessages([...newMessages, { role: 'assistant', content: "Model limit reached. Please select a different model." }]);
+      setMessages([...newMessages, { role: 'assistant', content: "Error: Model limit reached." }]);
     }
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#0D0D0D] text-white p-4">
-      <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full">
-        <div className="flex-1 overflow-y-auto space-y-4 p-4">
-          {messages.map((m, i) => (
-            <div key={i} className={`p-4 rounded-xl ${m.role === 'user' ? 'bg-[#2A2A2A] ml-auto' : 'bg-transparent'}`}>
-              {m.content}
+    <div className="flex h-screen w-full bg-[#0D0D0D] text-white font-sans overflow-hidden">
+      {/* Sidebar */}
+      <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} bg-[#242424] transition-all flex flex-col border-r border-white/5`}>
+        <div className="p-4 font-bold text-xl text-center">BYTETECK AI</div>
+        <div className="p-4"><button onClick={startNewChat} className="w-full bg-[#333] py-3 rounded-xl hover:bg-[#444]">Add New Chat</button></div>
+        <div className="flex-1 overflow-y-auto px-3">
+          {sessions.map(s => (
+            <div key={s.id} onClick={() => { setCurrentSessionId(s.id); setMessages(s.messages); }} 
+                 className={`p-3 flex justify-between cursor-pointer hover:bg-[#2D2D2D] rounded-lg ${currentSessionId === s.id ? 'bg-[#333]' : ''}`}>
+              <span>{s.title}</span>
+              <button onClick={(e) => deleteChat(s.id, e)} className="text-red-400">✕</button>
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Chat */}
+      <div className="flex-1 flex flex-col p-4">
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 w-fit">Menu</button>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map((m, i) => (
+            <div key={i} className={`p-4 rounded-xl max-w-[80%] ${m.role === 'user' ? 'bg-[#2A2A2A] ml-auto' : ''}`}>{m.content}</div>
           ))}
           <div ref={messagesEndRef} />
         </div>
-        <div className="flex gap-2 p-3 bg-[#1A1A1A] rounded-2xl border border-white/10">
-          <input className="flex-1 bg-transparent outline-none px-2" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} />
+        <div className="flex gap-2 p-3 bg-[#1A1A1A] rounded-2xl">
+          <input className="flex-1 bg-transparent outline-none" value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} />
           <select className="bg-[#2A2A2A] text-xs px-2 rounded-lg" onChange={e => setModel(e.target.value)}>
             <option value="models/gemini-2.0-flash">2.0 Flash</option>
+            <option value="models/gemini-2.5-flash">2.5 Flash</option>
+            <option value="models/gemini-3.1-flash-lite">3.1 Lite</option>
             <option value="models/gemini-3.5-flash">3.5 Flash</option>
             <option value="models/gemini-flash-latest">Flash Latest</option>
           </select>
