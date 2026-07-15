@@ -256,7 +256,7 @@ export default function Home() {
     <div className="flex h-screen w-full bg-[#0D0D0D] text-white">
       {/* Sidebar */}
       <div className={`${isSidebarOpen ? 'w-72' : 'w-0'} bg-[#242424] p-4 flex flex-col border-r border-white/10 transition-all duration-300`}>
-        
+        <div className="text-xl font-bold text-[#555] mb-6">BYTETECK</div>
         <button onClick={startNewChat} className="w-full bg-[#333] py-3 rounded-xl mb-4 hover:bg-[#444]">Add New Chat</button>
         <div className="flex-1 overflow-y-auto">
           {sessions.map(s => (
@@ -271,16 +271,17 @@ export default function Home() {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col p-6">
         <div className="flex-1 overflow-y-auto space-y-4">
-          {messages.length === 0 && (
+          {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center">
-              <h1 className="text-xl font-bold text-[#555] animate-pulse mb-6">BYTETECK</h1>
+              <h1 className="text-7xl font-black text-[#333] animate-pulse">BYTETECK</h1>
             </div>
+          ) : (
+            messages.map((m, i) => (
+              <div key={i} className={`p-4 rounded-xl max-w-[80%] ${m.role === 'user' ? 'bg-[#2A2A2A] ml-auto' : ''}`}>
+                {m.content}
+              </div>
+            ))
           )}
-          {messages.map((m, i) => (
-            <div key={i} className={`p-4 rounded-xl max-w-[80%] ${m.role === 'user' ? 'bg-[#2A2A2A] ml-auto' : ''}`}>
-              {m.content}
-            </div>
-          ))}
           <div ref={messagesEndRef} />
         </div>
 
@@ -288,7 +289,7 @@ export default function Home() {
         <div className="flex gap-2 p-3 bg-[#1A1A1A] rounded-2xl border border-white/20">
           <input 
             className="flex-1 bg-transparent outline-none px-2" 
-            placeholder="Ask ByteTeck..." 
+            placeholder="Ask ByteTeck anything..." 
             value={input} 
             onChange={e => setInput(e.target.value)} 
             onKeyDown={e => e.key === 'Enter' && sendMessage()} 
