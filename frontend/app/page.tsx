@@ -34,7 +34,7 @@ export default function Home() {
     setSessions([newSession, ...sessions]);
     setCurrentSessionId(newSession.id);
     setMessages([]);
-    setIsSidebarOpen(false);
+    // Sidebar band nahi hoga
   };
 
   const deleteChat = (id: string, e: React.MouseEvent) => {
@@ -52,12 +52,17 @@ export default function Home() {
     setMessages(newMessages);
     setInput('');
     try {
-      // NOTE: Mobile par testing ke liye yahan "http://127.0.0.1:8000" ko apne local IP se replace kar lena
-      const res = await axios.post('http://127.0.0.1:8000/chat', { history: messages, message: input, model_id: model });
+      // Yahan apna Render wala Live URL daalna jab deploy ho jaye
+      const res = await axios.post('https://byteteck-backend.onrender.com/chat', { 
+        history: messages, 
+        message: input, 
+        model_id: model 
+      });
       const aiMsg = { role: 'assistant', content: res.data.answer.replace(/\*\*/g, '') };
       setMessages([...newMessages, aiMsg]);
       setSessions(prev => prev.map(s => s.id === (currentSessionId || s.id) ? { ...s, messages: [...newMessages, aiMsg], title: input.substring(0, 20) } : s));
     } catch (e) { alert("Server Error! Please check if the backend is running."); }
+    // Sidebar band karne wali line yahan se hata di hai
   };
 
   return (
@@ -70,7 +75,7 @@ export default function Home() {
         </div>
         <div className="flex-1 overflow-y-auto px-3 space-y-2">
           {sessions.map(s => (
-            <div key={s.id} onClick={() => { setCurrentSessionId(s.id); setMessages(s.messages); setIsSidebarOpen(false); }} 
+            <div key={s.id} onClick={() => { setCurrentSessionId(s.id); setMessages(s.messages); }} 
                  className={`group flex items-center justify-between p-3.5 text-[14px] font-medium rounded-lg cursor-pointer ${currentSessionId === s.id ? 'bg-[#333]' : 'hover:bg-[#2D2D2D]'}`}>
               <span className="truncate">{s.title}</span>
               <button onClick={(e) => deleteChat(s.id, e)} className="hidden group-hover:block text-gray-400 hover:text-red-400">✕</button>
@@ -82,7 +87,6 @@ export default function Home() {
       {/* MAIN CHAT */}
       <div className="flex-1 flex flex-col relative bg-transparent w-full overflow-hidden">
         
-        {/* WATERMARK FIXED WITH TAILWIND */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
           <h1 className="text-[clamp(40px,8vw,110px)] font-black text-white opacity-[0.15] uppercase select-none text-center px-4 animate-pulse">
             BYTETECK
