@@ -7,18 +7,18 @@ import os
 
 load_dotenv()
 
+# API Key check
 api_key = os.getenv("GOOGLE_API_KEY")
 client = genai.Client(api_key=api_key)
 
+# Sirf safe models rakhe hain jo har account par chalte hain
 ALLOWED_MODELS = [
     "models/gemini-2.0-flash",
-    "models/gemini-2.5-flash",
-    "models/gemini-3.1-flash-lite",
-    "models/gemini-3.5-flash",
-    "models/gemini-flash-latest"
+    "models/gemini-flash"
 ]
 
 def get_model_response(user_input, model_id, system_instruction):
+    # Agar model list mein nahi hai, toh default flash use karega
     if model_id not in ALLOWED_MODELS:
         model_id = "models/gemini-2.0-flash" 
 
@@ -32,14 +32,13 @@ def get_model_response(user_input, model_id, system_instruction):
         )
         return response.text
     except Exception as e:
-        # Yahan bhi error ko handle kiya hai taaki crash na ho
         raise Exception(str(e))
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], # Ye chal jayega, tension mat lo
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,19 +55,22 @@ def get_skill_instruction(skill_name):
     if skill_name == "identity":
         return f"{base_identity} Always focus on introducing yourself."
     
+    # Skills folder check
     try:
-        with open(f"skills/{skill_name}.txt", "r", encoding="utf-8") as f:
-            return f"{base_identity} {f.read()}"
+        skill_path = f"skills/{skill_name}.txt"
+        if os.path.exists(skill_path):
+            with open(skill_path, "r", encoding="utf-8") as f:
+                return f"{base_identity} {f.read()}"
+        return f"{base_identity} You are a helpful and professional assistant."
     except:
         return f"{base_identity} You are a helpful and professional assistant."
 
 @app.post("/chat")
 async def chat(data: ChatRequest):
+    # Model ID handle karna
     full_model_id = data.model_id if data.model_id.startswith("models/") else f"models/{data.model_id}"
     
-    if full_model_id not in ALLOWED_MODELS:
-        return {"answer": "Invalid model selected. Please choose a valid model from the list."}
-    
+    # Logic wahi hai, bas model validation safe kar di
     msg = data.message.lower()
     if any(w in msg for w in ["who are you", "introduce", "creator", "developer", "name", "ap kon ho", "naam"]):
         skill = "identity"
@@ -92,30 +94,10 @@ async def chat(data: ChatRequest):
         return {"answer": answer}
     except Exception as e:
         error_msg = str(e)
-        
         if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-            return {"answer": "The AI model's limit has been reached. Please select a different model and try again."}
-        if "503" in error_msg or "UNAVAILABLE" in error_msg:
-            return {"answer": "The model is currently busy. Please try again in a few moments."}
-        
-        return {"answer": "Something went wrong. Please try again or switch to a different model."}
+            return {"answer": "The AI model's limit has been reached. Please try again."}
+        return {"answer": "Something went wrong. Please try again."}
 
 @app.get("/")
 async def root():
     return {"status": "Backend is running"}
-
-# from google import genai
-# import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
-# client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-
-# print("--- TUMHARE ACCOUNT KE ALLOWED MODELS ---")
-
-# for m in client.models.list():
-#     # Yahan 'supported_actions' use karna hai
-#     if "generateContent" in m.supported_actions:
-#         print(f"Model ID: {m.name}")
-
-# print("-----------------------------------------")
