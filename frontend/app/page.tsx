@@ -34,7 +34,7 @@ export default function Home() {
     setSessions([newSession, ...sessions]);
     setCurrentSessionId(newSession.id);
     setMessages([]);
-    setIsSidebarOpen(false); // Mobile par naya chat shuru hote hi sidebar band
+    setIsSidebarOpen(false);
   };
 
   const deleteChat = (id: string, e: React.MouseEvent) => {
@@ -52,6 +52,7 @@ export default function Home() {
     setMessages(newMessages);
     setInput('');
     try {
+      // NOTE: Mobile par testing ke liye yahan "http://127.0.0.1:8000" ko apne local IP se replace kar lena
       const res = await axios.post('http://127.0.0.1:8000/chat', { history: messages, message: input, model_id: model });
       const aiMsg = { role: 'assistant', content: res.data.answer.replace(/\*\*/g, '') };
       setMessages([...newMessages, aiMsg]);
@@ -79,10 +80,13 @@ export default function Home() {
       </div>
 
       {/* MAIN CHAT */}
-      <div className="flex-1 flex flex-col relative bg-transparent w-full">
+      <div className="flex-1 flex flex-col relative bg-transparent w-full overflow-hidden">
         
+        {/* WATERMARK FIXED WITH TAILWIND */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <h1 className="watermark-text font-black text-white uppercase select-none text-center px-4">BYTETECK</h1>
+          <h1 className="text-[clamp(40px,8vw,110px)] font-black text-white opacity-[0.15] uppercase select-none text-center px-4 animate-pulse">
+            BYTETECK
+          </h1>
         </div>
 
         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="absolute top-5 left-5 z-50 p-2 hover:bg-white/10 rounded-full transition-all">
@@ -115,11 +119,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        .watermark-text { font-size: clamp(90px, 9vw, 110px); opacity: 0.15; animation: pulse 3s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.15; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.05); } }
-      `}</style>
     </div>
   );
 }
