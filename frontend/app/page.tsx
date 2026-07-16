@@ -209,6 +209,8 @@
 // }
 
 
+
+
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
@@ -218,7 +220,7 @@ export default function Home() {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState('');
-  const [model, setModel] = useState("models/gemini-2.0-flash");
+  const [model, setModel] = useState("gemini-3.5-flash");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -241,14 +243,17 @@ export default function Home() {
     setInput('');
 
     try {
-      const res = await axios.post('https://byteteck-backend.onrender.com/chat', { 
+      const res = await axios.post('https://TashifImran.pythonanywhere.com/chat', { 
         history: messages, 
         message: input, 
         model_id: model 
       });
       setMessages([...newMessages, { role: 'assistant', content: res.data.answer.replace(/\*\*/g, '') }]);
-    } catch (e) {
-      setMessages([...newMessages, { role: 'assistant', content: "Backend error, please check Render." }]);
+    } catch (e: any) {
+      const errorMessage = (e.response && e.response.status === 429) 
+        ? "The limit for this model has been reached. Please select a different model and try again."
+        : "Backend error.";
+      setMessages([...newMessages, { role: 'assistant', content: errorMessage }]);
     }
   };
 
@@ -295,15 +300,13 @@ export default function Home() {
             onKeyDown={e => e.key === 'Enter' && sendMessage()} 
           />
           <select className="bg-[#2A2A2A] text-xs px-2 rounded-lg" onChange={e => setModel(e.target.value)}>
-            <option value="models/gemini-2.0-flash">2.0 Flash</option>
-            <option value="models/gemini-2.5-flash">2.5 Flash</option>
-            <option value="models/gemini-3.1-flash-lite">3.1 Lite</option>
-            <option value="models/gemini-3.5-flash">3.5 Flash</option>
-            <option value="models/gemini-flash-latest">Flash Latest</option>
+            <option value="gemini-3.5-flash">3.5 Flash</option>
+            <option value="gemini-3.5-pro">3.5 Pro</option>
+            <option value="gemini-3.1-flash-lite">3.1 Flash Lite</option>
+            <option value="gemini-2.5-flash">2.5 Flash</option>
           </select>
           <button onClick={sendMessage} className="bg-white text-black px-6 py-2 rounded-xl font-bold">SEND</button>
         </div>
       </div>
     </div>
   );
-}
