@@ -1,23 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/main.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
+      "source": "/api/(.*)",
       "destination": "/api/main.py"
-    },
-    {
-      "src": "/(.*)",
-      "destination": "/$1"
     }
   ]
 }
