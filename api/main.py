@@ -77,5 +77,5 @@ async def chat(data: ChatRequest):
         return {"answer": response.text}
 
     except Exception as e:
-        return {"answer": f"Backend Error: {str(e)}"}
+        return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
 
