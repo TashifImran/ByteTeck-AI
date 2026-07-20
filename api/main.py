@@ -22,7 +22,7 @@ SKILL_MAP = {
     "ads": "ads", "advertisement": "ads", "marketing": "ads", "campaign": "ads", "promotion": "ads", "facebook ads": "ads", "google ads": "ads",
     "code": "coding", "python": "coding", "develop": "coding", "javascript": "coding", "nextjs": "coding", "backend": "coding", "frontend": "coding", "programming": "coding", "debug": "coding", "api": "coding", "script": "coding",
     "write": "copywriter", "copywrite": "copywriter" , "content": "copywriter", "blog": "copywriter", "copy": "copywriter", "article": "copywriter", "essay": "copywriter", "email": "copywriter", "draft": "copywriter", "caption": "copywriter",
-    "who are you": "identity", "what is your name": "identity", "name": "identity", "about yourself": "identity", "creator": "identity", "tashif": "identity", "tashif imran": "identity", "your identity": "identity",
+    "who are you": "identity", "what is your name": "identity", "name": "identity", "about yourself": "identity", "creator": "identity", "tashif": "identity", "tashif imran": "identity", "your identity": "identity", "kisnay banaya": "identity", "ap kon": "identity",
     "image": "pictures", "photo": "pictures", "picture": "pictures", "generate": "pictures", "design": "pictures", "graphic": "pictures", "visual": "pictures", "art": "pictures", "photoshop": "pictures",
     "research": "research", "data": "research", "search": "research", "find": "research", "information": "research", "analyze": "research", "analysis": "research", "facts": "research", "study": "research", "investigate": "research"
 }
