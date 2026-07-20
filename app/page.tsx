@@ -403,8 +403,9 @@ export default function Home() {
       <div className="flex-1 flex flex-col relative z-10 bg-transparent overflow-hidden">
         
         {/* Background Watermark Text - Sirf Chat Area ke andar centered */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-          <h1 className="text-[100px] font-black text-gray-600 opacity-50 select-none tracking-widest uppercase text-center px-4">
+        {/* Background Watermark Text - Opacity 40 */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 px-6">
+          <h1 className="text-[75px] font-black text-gray-500 opacity-40 select-none tracking-widest uppercase text-center">
             BYTETECK
           </h1>
         </div>
