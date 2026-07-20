@@ -404,7 +404,7 @@ export default function Home() {
         
         {/* Background Watermark Text - Sirf Chat Area ke andar centered */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-          <h1 className="text-[100px] font-black text-gray-600 opacity-20 select-none tracking-widest uppercase text-center px-4">
+          <h1 className="text-[100px] font-black text-gray-600 opacity-50 select-none tracking-widest uppercase text-center px-4">
             BYTETECK
           </h1>
         </div>
