@@ -77,9 +77,8 @@ async def chat(data: ChatRequest):
         )
         return {"answer": response.text}
         
-    # except Exception as e:
-    #     print(f"ASLI ERROR YAHAN HAI ---> {str(e)}") # Yeh line add karo
-    #     return {"answer": f"Error: {str(e)}"} # Filhal temporary yeh return karo taaki frontend par pata chale
     except Exception as e:
-        return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
+        return {"answer": f"Error: {str(e)}"} 
+    # except Exception as e:
+    #     return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
 
