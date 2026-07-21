@@ -25,7 +25,7 @@ SKILL_MAP = {
     "who are you": "identity", "what is your name": "identity", "name": "identity", "about yourself": "identity", "creator": "identity", "tashif": "identity", "tashif imran": "identity", "your identity": "identity", "kisnay banaya": "identity", "ap kon": "identity",
     "image": "pictures", "photo": "pictures", "picture": "pictures", "generate": "pictures", "design": "pictures", "graphic": "pictures", "visual": "pictures", "art": "pictures", "photoshop": "pictures",
     "research": "research", "data": "research", "search": "research", "find": "research", "information": "research", "analyze": "research", "analysis": "research", "facts": "research", "study": "research", "investigate": "research",
-    "byteteck": "company", "byte teck": "company", "bytetech": "company", "service": "company", "what is byteteck": "company", "byteteck kya hai": "company", "about byteteck": "company", "tell me about byteteck": "company", "byteteck kisne banaya": "company", "who made byteteck": "company", "owner of byteteck": "company"
+    "tell me about byteteck": "company", "what is byteteck": "company", "bytetech": "company", "services": "company", "byteteck": "company", "byteteck kya hai": "company", "about byteteck": "company", "byte teck": "company", "byteteck kisne banaya": "company", "who made byteteck": "company", "owner of byteteck": "company"
 }
 
 app.add_middleware(
@@ -77,9 +77,9 @@ async def chat(data: ChatRequest):
         )
         return {"answer": response.text}
         
-    except Exception as e:
-        print(f"ASLI ERROR YAHAN HAI ---> {str(e)}") # Yeh line add karo
-        return {"answer": f"Error: {str(e)}"} # Filhal temporary yeh return karo taaki frontend par pata chale
     # except Exception as e:
-    #     return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
+    #     print(f"ASLI ERROR YAHAN HAI ---> {str(e)}") # Yeh line add karo
+    #     return {"answer": f"Error: {str(e)}"} # Filhal temporary yeh return karo taaki frontend par pata chale
+    except Exception as e:
+        return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
 
