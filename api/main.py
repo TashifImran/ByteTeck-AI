@@ -77,8 +77,28 @@ async def chat(data: ChatRequest):
         )
         return {"answer": response.text}
         
-    # except Exception as e:
-    #     return {"answer": f"Error: {str(e)}"} 
     except Exception as e:
-        return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
+        error_str = str(e)
+        
+        # 1. Quota ya Rate Limit Error (429)
+        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+            return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
+        
+        # 2. Invalid Model Error (Agar model ka naam ghalat ho)
+        elif "model" in error_str.lower() or "not found" in error_str.lower():
+            return {"answer": "Selected model is currently unavailable or invalid. Please choose another model from the list."}
+        
+        # 3. API Key Missing ya Unauthorized Error (403 / 401)
+        elif "403" in error_str or "401" in error_str or "api_key" in error_str.lower():
+            return {"answer": "API key authentication failed."}
+        
+        # 4. Skills file ya Directory missing ka error
+        elif "file" in error_str.lower() or "no such file" in error_str.lower():
+            return {"answer": "System encountered an issue loading internal skill instructions. Please try again later."}
+        
+        # 5. Koi bhi un-expected error ho toh uske liye ek standard clean message
+        else:
+            return {"answer": "Something went wrong while processing your request. Please try again."}
+    # except Exception as e:
+    #     return {"answer": "The limit for this model has been reached. Please select a different model and try again."}
 
