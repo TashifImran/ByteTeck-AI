@@ -24,8 +24,9 @@ SKILL_MAP = {
     "write": "copywriter", "copywrite": "copywriter" , "content": "copywriter", "blog": "copywriter", "copy": "copywriter", "article": "copywriter", "essay": "copywriter", "email": "copywriter", "draft": "copywriter", "caption": "copywriter",
     "who are you": "identity", "what is your name": "identity", "name": "identity", "about yourself": "identity", "creator": "identity", "tashif": "identity", "tashif imran": "identity", "your identity": "identity", "kisnay banaya": "identity", "ap kon": "identity",
     "image": "pictures", "photo": "pictures", "picture": "pictures", "generate": "pictures", "design": "pictures", "graphic": "pictures", "visual": "pictures", "art": "pictures", "photoshop": "pictures",
-    "research": "research", "data": "research", "search": "research", "find": "research", "information": "research", "analyze": "research", "analysis": "research", "facts": "research", "study": "research", "investigate": "research"
-}   "byteteck": "company", "byte teck": "company", "bytetech": "company", "service": "company", "what is byteteck": "company", "byteteck kya hai": "company", "about byteteck": "company", "tell me about byteteck": "company", "byteteck kisne banaya": "company", "who made byteteck": "company", "owner of byteteck": "company"
+    "research": "research", "data": "research", "search": "research", "find": "research", "information": "research", "analyze": "research", "analysis": "research", "facts": "research", "study": "research", "investigate": "research",
+    "byteteck": "company", "byte teck": "company", "bytetech": "company", "service": "company", "what is byteteck": "company", "byteteck kya hai": "company", "about byteteck": "company", "tell me about byteteck": "company", "byteteck kisne banaya": "company", "who made byteteck": "company", "owner of byteteck": "company"
+}
 
 app.add_middleware(
     CORSMiddleware,
