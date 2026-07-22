@@ -135,8 +135,9 @@ class ChatRequest(BaseModel):
 
 def get_skill_instruction(message: str) -> str:
     msg_lower = message.lower()
-    skill_name = "mentor"
+    skill_name = "mentor"  # Default skill
 
+    # SKILL_MAP mein check karna
     for keyword, s_name in SKILL_MAP.items():
         if keyword in msg_lower:
             skill_name = s_name
@@ -146,12 +147,44 @@ def get_skill_instruction(message: str) -> str:
     file_path = os.path.join(base_dir, "skills", f"{skill_name}.txt")
     fallback_path = os.path.join(base_dir, "skills", "mentor.txt")
 
+    # Terminal mein check karne ke liye print
+    print(f"--> Message: '{message}' | Detected Skill: '{skill_name}' | Target File: {file_path}")
+
     try:
-        target_path = file_path if os.path.exists(file_path) else fallback_path
-        with open(target_path, "r", encoding="utf-8") as f:
-            return f.read()
-    except Exception:
-        return "You are a helpful ByteTeck AI assistant developed by Tashif Imran."
+        # Check karein ke file exist karti hai ya nahi
+        if os.path.exists(file_path):
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+                print(f"--> Successfully loaded skill file for: {skill_name}")
+                return content
+        else:
+            print(f"--> WARNING: {file_path} not found! Falling back to mentor.txt")
+            with open(fallback_path, "r", encoding="utf-8") as f:
+                return f.read()
+                
+    except Exception as e:
+        print(f"--> ERROR reading skill file: {e}")
+        return "You are the official AI assistant and professional representative for ByteTeck."
+
+# def get_skill_instruction(message: str) -> str:
+#     msg_lower = message.lower()
+#     skill_name = "mentor"
+
+#     for keyword, s_name in SKILL_MAP.items():
+#         if keyword in msg_lower:
+#             skill_name = s_name
+#             break
+
+#     base_dir = os.path.dirname(os.path.abspath(__file__))
+#     file_path = os.path.join(base_dir, "skills", f"{skill_name}.txt")
+#     fallback_path = os.path.join(base_dir, "skills", "mentor.txt")
+
+#     try:
+#         target_path = file_path if os.path.exists(file_path) else fallback_path
+#         with open(target_path, "r", encoding="utf-8") as f:
+#             return f.read()
+#     except Exception:
+#         return "You are a helpful ByteTeck AI assistant developed by Tashif Imran."
 
 @app.post("/api/chat")
 async def chat(data: ChatRequest):
