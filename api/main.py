@@ -19,13 +19,101 @@ ALLOWED_MODELS = [
 
 # Skill Keywords Mapping
 SKILL_MAP = {
-    "ads": "ads", "advertisement": "ads", "marketing": "ads", "campaign": "ads", "promotion": "ads", "facebook ads": "ads", "google ads": "ads",
-    "code": "coding", "python": "coding", "develop": "coding", "javascript": "coding", "nextjs": "coding", "backend": "coding", "frontend": "coding", "programming": "coding", "debug": "coding", "api": "coding", "script": "coding",
-    "write": "copywriter", "copywrite": "copywriter" , "content": "copywriter", "blog": "copywriter", "copy": "copywriter", "article": "copywriter", "essay": "copywriter", "email": "copywriter", "draft": "copywriter", "caption": "copywriter",
-    "who are you": "identity", "what is your name": "identity", "name": "identity", "about yourself": "identity", "creator": "identity", "tashif": "identity", "tashif imran": "identity", "your identity": "identity", "kisnay banaya": "identity", "ap kon": "identity",
-    "image": "pictures", "photo": "pictures", "picture": "pictures", "generate": "pictures", "design": "pictures", "graphic": "pictures", "visual": "pictures", "art": "pictures", "photoshop": "pictures",
-    "research": "research", "data": "research", "search": "research", "find": "research", "information": "research", "analyze": "research", "analysis": "research", "facts": "research", "study": "research", "investigate": "research",
-    "tell me about byteteck": "company", "what is byteteck": "company", "bytetech": "company", "services": "company", "byteteck": "company", "byteteck kya hai": "company", "about byteteck": "company", "byte teck": "company", "byteteck kisne banaya": "company", "who made byteteck": "company", "owner of byteteck": "company"
+    # --- Company / ByteTeck Skills ---
+    "byteteck": "company",
+    "bytetech": "company",
+    "byte teck": "company",
+    "digital byteteck": "company",
+    "about byteteck": "company",
+    "what is byteteck": "company",
+    "byteteck kya hai": "company",
+    "founder": "company",
+    "office": "company",
+    "tell about byteteck": "company",
+    "location": "company",
+    "services": "company",
+    "company": "company",
+    "about us": "company",
+    "who owns byteteck": "company",
+
+    # --- Ads & Marketing Skills ---
+    "ads": "ads",
+    "advertisement": "ads",
+    "marketing": "ads",
+    "digital marketing": "ads",
+    "campaign": "ads",
+    "promotion": "ads",
+    "facebook ads": "ads",
+    "google ads": "ads",
+    "seo": "ads",
+    "geo": "ads",
+    "social media": "ads",
+
+    # --- Coding & Development Skills ---
+    "code": "coding",
+    "coding": "coding",
+    "python": "coding",
+    "develop": "coding",
+    "development": "coding",
+    "javascript": "coding",
+    "nextjs": "coding",
+    "backend": "coding",
+    "frontend": "coding",
+    "programming": "coding",
+    "debug": "coding",
+    "api": "coding",
+    "script": "coding",
+    "web development": "coding",
+    "app development": "coding",
+    "automation": "coding",
+
+    # --- Copywriting Skills ---
+    "write": "copywriter",
+    "copywrite": "copywriter",
+    "content": "copywriter",
+    "blog": "copywriter",
+    "copy": "copywriter",
+    "article": "copywriter",
+    "essay": "copywriter",
+    "email": "copywriter",
+    "draft": "copywriter",
+    "caption": "copywriter",
+
+    # --- Identity Skills ---
+    "developer": "idebtity",
+    "who are you": "identity",
+    "what is your name": "identity",
+    "name": "identity",
+    "about yourself": "identity",
+    "creator": "identity",
+    "tashif": "identity",
+    "tashif imran": "identity",
+    "your identity": "identity",
+    "kisnay banaya": "identity",
+    "ap kon": "identity",
+
+    # --- Pictures / Design Skills ---
+    "image": "pictures",
+    "photo": "pictures",
+    "picture": "pictures",
+    "generate": "pictures",
+    "design": "pictures",
+    "graphic": "pictures",
+    "visual": "pictures",
+    "art": "pictures",
+    "photoshop": "pictures",
+
+    # --- Research Skills ---
+    "research": "research",
+    "data": "research",
+    "search": "research",
+    "find": "research",
+    "information": "research",
+    "analyze": "research",
+    "analysis": "research",
+    "facts": "research",
+    "study": "research",
+    "investigate": "research"
 }
 
 app.add_middleware(
