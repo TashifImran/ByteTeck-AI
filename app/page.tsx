@@ -365,7 +365,7 @@ export default function Home() {
     const newTitle = updatedMessages.length === 1 ? input.slice(0, 25) : (sessions.find(s => s.id === activeId)?.title || "New Chat");
     try {
       const res = await axios.post('/api/chat', {
-        message: input, model: model
+        history: messages, message: input, model_id: model
       });
       const finalMsgs = [...updatedMessages, { role: 'assistant', content: res.data.answer.replace(/\*\*/g, '') }];
       setMessages(finalMsgs);
