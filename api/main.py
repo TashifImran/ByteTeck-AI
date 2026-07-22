@@ -124,9 +124,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# class ChatRequest(BaseModel):
+#     message: str
+#     model: str = 
+
 class ChatRequest(BaseModel):
     message: str
-    model: str = "gemini-2.5-flash"  # Default model agar frontend se na aaye
+    model: str = "gemini-2.5-flash"
+    history: list = []  
 
 def get_skill_instruction(message: str) -> str:
     msg_lower = message.lower()
