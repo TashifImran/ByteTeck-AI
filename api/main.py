@@ -462,6 +462,20 @@ def get_skill_instruction(message: str) -> str:
         return "You are a helpful AI assistant of Digital Byteteck developed by Tashif Imran. never mention any other company as your creator or trainer"
 
 @app.post("/api/chat")
+# async def chat(data: ChatRequest):
+#     try:
+#         selected_model = data.model if data.model in ALLOWED_MODELS else "gemini-2.5-flash"
+        
+#         instruction = get_skill_instruction(data.message)
+
+#         response = client.models.generate_content(
+#             model=selected_model,
+#             contents=data.message,
+#             config={
+#                 'system_instruction': instruction
+#             }
+#         )
+
 async def chat(data: ChatRequest):
     try:
         selected_model = data.model if data.model in ALLOWED_MODELS else "gemini-2.5-flash"
@@ -472,9 +486,13 @@ async def chat(data: ChatRequest):
             model=selected_model,
             contents=data.message,
             config={
-                'system_instruction': instruction
+                'system_instruction': instruction,
+                'temperature': 0.1
             }
         )
+        
+        # YE WALA RETURN MISSING THA, AB WAPAS LAGA DIYA HAI:
+        return {"answer": response.text}
         
     except Exception as e:
         error_str = str(e)
