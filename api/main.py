@@ -468,14 +468,23 @@ async def chat(data: ChatRequest):
         
         instruction = get_skill_instruction(data.message)
 
-        response = client.models.generate_content(
-            model=selected_model,
-            contents=data.message,
-            config={
-                'system_instruction': instruction
-            }
-        )
-        return {"answer": response.text}
+        # response = client.models.generate_content(
+        #     model=selected_model,
+        #     contents=data.message,
+        #     config={
+        #         'system_instruction': instruction
+        #     }
+        # )
+        # return {"answer": response.text}
+       response = client.models.generate_content(
+           model=selected_model,
+           contents=data.message,
+           config={
+               'system_instruction': instruction,
+               'temperature': 0.1
+           }
+       )
+       return {"answer": response.text}
         
     except Exception as e:
         error_str = str(e)
