@@ -263,7 +263,7 @@ def get_skill_instruction(message: str) -> str:
         with open(target_path, "r", encoding="utf-8") as f:
             return f.read()
     except Exception:
-        return "You are a helpful ByteTeck AI assistant developed by Tashif Imran."
+        return "."
 
 @app.post("/api/chat")
 async def chat(data: ChatRequest):
