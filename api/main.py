@@ -254,8 +254,10 @@ def get_skill_instruction(message: str) -> str:
             skill_name = s_name
             break
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(base_dir, "skills", f"{skill_name}.txt")
+    # base_dir = os.path.dirname(os.path.abspath(__file__))
+    # file_path = os.path.join(base_dir, "skills", f"{skill_name}.txt")
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    skills_dir = os.path.join(base_dir, "skills")
     fallback_path = os.path.join(base_dir, "skills", "mentor.txt")
 
     try:
