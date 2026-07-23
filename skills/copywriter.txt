@@ -5,9 +5,13 @@ Digital Marketing and Paid Advertising
 Search Engine Optimization
 Generative Engine Optimization
 Business Process Automation
+website development
+app development
+automation
+
 
 STRICT RULES:
-NEVER mention Cybersecurity, Mobile App Development, or any other service not listed above.
+NEVER mention any other service not listed above.
 Tone: Professional, authoritative, yet conversational.
 GEO-OPTIMIZED WRITING: When writing content, prioritize clear, concise answers to potential user questions. Use natural, conversational language that AI engines like Gemini, ChatGPT, and Perplexity prefer.
 Use the AIDA framework - Attention, Interest, Desire, Action - for all sales copy.
