@@ -6,10 +6,8 @@ from google import genai
 
 app = FastAPI()
 
-# Naye aur official SDK ka client initialize
 client = genai.Client()
 
-# Allowed Models ki list jo aapne di hai
 ALLOWED_MODELS = [
     "gemini-3.5-flash", 
     "gemini-3.5-pro", 
@@ -17,9 +15,8 @@ ALLOWED_MODELS = [
     "gemini-2.5-flash"
 ]
 
-# Skill Keywords Mapping
 SKILL_MAP = {
-    # --- Company / ByteTeck Skills ---
+
     "byteteck": "company",
     "bytetech": "company",
     "byte teck": "company",
@@ -36,7 +33,6 @@ SKILL_MAP = {
     "about us": "company",
     "who owns byteteck": "company",
 
-    # --- Ads & Marketing Skills ---
     "ads": "ads",
     "advertisement": "ads",
     "marketing": "ads",
@@ -49,7 +45,6 @@ SKILL_MAP = {
     "geo": "ads",
     "social media": "ads",
 
-    # --- Coding & Development Skills ---
     "code": "coding",
     "coding": "coding",
     "python": "coding",
@@ -67,7 +62,6 @@ SKILL_MAP = {
     "app development": "coding",
     "automation": "coding",
 
-    # --- Copywriting Skills ---
     "write": "copywriter",
     "copywrite": "copywriter",
     "content": "copywriter",
@@ -79,7 +73,6 @@ SKILL_MAP = {
     "draft": "copywriter",
     "caption": "copywriter",
 
-    # --- Identity Skills ---
     "who is your developer": "identity",
     "who developed you": "identity",
     "developer": "identity",
@@ -94,7 +87,6 @@ SKILL_MAP = {
     "kisnay banaya": "identity",
     "ap kon": "identity",
 
-    # --- Pictures / Design Skills ---
     "image": "pictures",
     "photo": "pictures",
     "picture": "pictures",
@@ -105,7 +97,6 @@ SKILL_MAP = {
     "art": "pictures",
     "photoshop": "pictures",
 
-    # --- Research Skills ---
     "research": "research",
     "data": "research",
     "search": "research",
@@ -155,19 +146,6 @@ def get_skill_instruction(message: str) -> str:
         return "You are a helpful AI assistant of Digital Byteteck developed by Tashif Imran. never mention any other company as your creator or trainer"
 
 @app.post("/api/chat")
-# async def chat(data: ChatRequest):
-#     try:
-#         selected_model = data.model if data.model in ALLOWED_MODELS else "gemini-2.5-flash"
-        
-#         instruction = get_skill_instruction(data.message)
-
-#         response = client.models.generate_content(
-#             model=selected_model,
-#             contents=data.message,
-#             config={
-#                 'system_instruction': instruction
-#             }
-#         )
 
 async def chat(data: ChatRequest):
     try:
@@ -183,8 +161,8 @@ async def chat(data: ChatRequest):
                 'temperature': 0.1
             }
         )
+
         
-        # YE WALA RETURN MISSING THA, AB WAPAS LAGA DIYA HAI:
         return {"answer": response.text}
         
     except Exception as e:
